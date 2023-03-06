@@ -18,6 +18,11 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    # define outputs identifiers of your job
+    # steps is the context which we are accessing (where steps data is stored)
+    # then we access the id of one of our steps and then the output we defined
+    outputs:
+      script-file: $ {{ steps.publish.outputs.script-file }}
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -25,6 +30,12 @@ jobs:
         run: npm ci
       - name: Build website
         run: npm run build
+        # GITHUB_OUTPUT is a file created by the github environment where the
+        # output value pair is written into
+        # the id is used to access data linked to that id (in this case the output of the step)
+      - name: Publish JS filename
+        id: publish
+        run: find dist/assets/*.js -type f -execdir echo 'script-file={}' >> $GITHUB_OUTPUT ';' 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
