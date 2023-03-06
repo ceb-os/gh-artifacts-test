@@ -31,13 +31,23 @@ jobs:
           # name of the artifact zip
           name: dist-files
           # paths that will be uploaded as artifacts to github
-          path: |
-            dist
-            package.json
+          path: dist
+          # path: |
+          #   dist
+          #   package.json
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Get build artifacts
+        uses: actions/download-artifact@v3
+        with: 
+          name: dist-files
+      # after downloading the artifacts to our runner, the folder dist-files will be lost and we will
+      # only be able to view the list of the downloaded artifacts
+      - name: Output contents
+        run: ls
       - name: Deploy
         run: echo "Deploying..."
+       
