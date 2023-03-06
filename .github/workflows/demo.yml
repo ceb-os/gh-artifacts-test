@@ -9,6 +9,20 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v3
+      # to cache files we must create a step before the files that we want to cache
+      # we must specify the path or paths that should be cached
+      # we must also specify a key that will be used to retrieve the cache 
+      # the key also indicates wether the cache should be discarded because it must be recreated
+      # because a dependency changed, thats why we give it a non-static-hard-coded name
+      # if the cache already existed then it wont be recreated, but will be re-used 
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          # the function provided here creates a unique hash value based on a file path
+          # the hash value will change whenever the file we are passing changes
+          # the file package-lock.json specifies all the dependencies of the projects
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
       - name: Lint code
@@ -26,6 +40,13 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v3
+      # here we are using the cached dependencies by accessing the directory
+      # created in the cache dependencies step in previous job  
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
       - name: Build website
