@@ -59,6 +59,9 @@ jobs:
       # only be able to view the list of the downloaded artifacts
       - name: Output contents
         run: ls
+      # access the context of a job with needs and then the job name  
+      - name: Output filename
+        run: echo "${{ needs.build.outputs.script-file }}"
       - name: Deploy
         run: echo "Deploying..."
        
