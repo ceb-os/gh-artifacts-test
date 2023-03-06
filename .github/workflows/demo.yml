@@ -22,7 +22,7 @@ jobs:
     # steps is the context which we are accessing (where steps data is stored)
     # then we access the id of one of our steps and then the output we defined
     outputs:
-      script-file: $ {{ steps.publish.outputs.script-file }}
+      script-file: ${{ steps.publish.outputs.script-file }}
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -59,7 +59,7 @@ jobs:
       # only be able to view the list of the downloaded artifacts
       - name: Output contents
         run: ls
-      # access the context of a job with needs and then the job name  
+      # access the context of a job with needs and then the job name    
       - name: Output filename
         run: echo "${{ needs.build.outputs.script-file }}"
       - name: Deploy
